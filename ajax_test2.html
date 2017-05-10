@@ -1,0 +1,89 @@
+var countdown = 60;
+function settime(obj) {
+	if (countdown == 0) {
+		obj.removeAttribute("disabled");
+		obj.value = "获取验证码";
+		countdown = 60;
+		$('.bd_yzm_tbn').css({'background-color':'#57ADE1','color':'#fff'});
+		return;
+	} else {
+		$('.bd_yzm_tbn').css({'background-color':'#EAEAEA','color':'#000'});
+		obj.setAttribute("disabled", true);
+		obj.value = countdown +"s再发送";
+		countdown--;
+	}
+	setTimeout(function() {
+		settime(obj)
+	},
+	1000)
+}
+
+$(function(){
+	$('#btn').click(function(){
+		var phone = $('#phoneNumber').val();	
+		var reg = /^1[0-9]{10}$/;
+		if(reg.test(phone)){
+			$.ajax({
+			  type: 'post',
+			  url: 'url',
+			  dataType: 'html',
+			  data:{'phone':phone},
+			  success:function(res){
+			  	if(res==1){
+			  		//发送成功
+			  		var obj = document.getElementById('btn');
+			  		settime(obj);
+			  	}else if(res==(-1)){
+			  		$.MsgBox.Alert('手机号错误！');	
+			  	}else if(res==(-2)){
+			  		$.MsgBox.Alert('发送失败，请稍后重试！');	
+			  	}else if(res==(-3)){
+			  		$.MsgBox.Alert('用户不存在，请联系管理员！');	
+			  	}else{
+			  		$.MsgBox.Alert('发送失败，请稍后重试！');	
+			  	}
+				}
+			});
+		}else{
+			$.MsgBox.Alert('请输入正确的手机号码！');	
+		}
+		
+	});
+	
+	$('#sub_btn').click(function(){
+		var phone = $('#phoneNumber').val();	
+		var code = $('#code').val();	
+		var reg = /^1[0-9]{10}$/;
+		if(reg.test(phone)){
+			var reg_c = /^[0-9]{6}$/;
+			if(reg_c.test(code)){
+				$.MsgBox.Confirm('温馨提示：','确认绑定号码'+phone,function(){
+					$.ajax({
+					  	type: 'get',
+					  	url: "url",
+					  	dataType: 'html',
+					  	data:{'phone':phone,'code':code},
+					  	success:function(res){
+						  	if(res==1){
+						  		$.MsgBox.Alert("手机号错误！");	history.go(-1);
+						  	}else if(res==2){
+						  		$.MsgBox.Alert("验证码失效，请重新获取");history.go(-1);	
+						  	}else if(res==3){
+						  		$.MsgBox.Alert("验证码不匹配！");history.go(-1);	
+						  	}else if(res==4){
+						  		$.MsgBox.Alert("验证码失效，请重新获取！");history.go(-1);	
+						  	}else if(res==5){
+						  		
+						  	}
+						}
+					});
+					
+				});	
+			}else{
+				$.MsgBox.Alert('验证码输入错误');		
+			}
+		}else{
+			$.MsgBox.Alert('请输入正确的手机号');	
+			
+		}
+	});

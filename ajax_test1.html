@@ -1,0 +1,39 @@
+$(function(){
+    $('.pullright').click(function(){		
+		var id = $('#id').val();
+		var name = $('#name').val();
+		var sex = $('#sex').val();
+		var city = $('#city_id').val();
+		var county = $('#county_id').val();
+		var country = $('#country_id').val();
+		var village = $('#village_id').val();
+		var address = $('#address').val();
+		var old_city = $("input[name='city']").val();
+		var old_county = $("input[name='county']").val();
+		var old_country = $("input[name='country']").val();
+		var old_village = $("input[name='village']").val();
+		var old_address = $("input[name='address']").val();
+		$.ajax({
+		  	type: 'post',
+		  	url: 'url',
+		  	dataType: 'json',
+		  	data:{'id':id,'name':name,'sex':sex,'city_id':city,'county_id':county,'country_id':country,'village_id':village,'address':address},
+		  	//data:$('#form').serialize(),
+		  	success:function(query){
+		  		if(query==3){
+		  			$.MsgBox.Alert('请填写正确昵称');
+		  		}else if(query==4){
+		  			$.MsgBox.Alert('请填写正确地址');
+		  		}else{
+		  			if(city==old_city && county==old_county && country==old_country && village==old_village && address==old_address){
+		  			
+		  			}else{
+			  			$.MsgBox.Confirm('123' ,'您的所在地修改信息已提交，工作人员将在1-3个工作日内联系您并进行确认。请保持手机畅通。' ,function(){
+			  				
+			  			});
+		  			}
+		  		}
+		  	}
+        });
+    });
+});
